@@ -1,18 +1,41 @@
+"use client";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+interface FormValues {
+	email: string;
+	password: string;
+	confirmPassword: string;
+}
 
 const RegisterPage = () => {
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm<FormValues>({
+		defaultValues: {
+			email: "",
+			password: "",
+			confirmPassword: "",
+		},
+	});
+	const handleFormSubmit = async () => {};
 	return (
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
 				<div className="sm:mx-auto sm:w-full sm:max-w-md">
-					<h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+					<h2 className="mt-6 text-center text-3xl font-bold leading-9 tracking-tight text-white">
 						Register
 					</h2>
 				</div>
 
 				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
 					<div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-						<form className="space-y-6" action="#" method="POST">
+						<form
+							className="space-y-6"
+							onSubmit={handleSubmit(handleFormSubmit)}
+						>
 							<div>
 								<label
 									htmlFor="email"
@@ -23,11 +46,11 @@ const RegisterPage = () => {
 								<div className="mt-2">
 									<input
 										id="email"
-										name="email"
 										type="email"
+										{...register("email", { required: true })}
 										autoComplete="email"
 										required
-										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										className="block pl-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
 							</div>
@@ -42,11 +65,11 @@ const RegisterPage = () => {
 								<div className="mt-2">
 									<input
 										id="password"
-										name="password"
 										type="password"
 										autoComplete="current-password"
+										{...register("password", { required: true })}
 										required
-										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										className="block pl-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
 								</div>
 							</div>
@@ -60,12 +83,23 @@ const RegisterPage = () => {
 								<div className="mt-2">
 									<input
 										id="password"
-										name="confirmPassword"
 										type="password"
+										{...register("confirmPassword", {
+											required: true,
+											validate: (val: string) => {
+												if (watch("password") !== val)
+													return "Password does not match";
+											},
+										})}
 										autoComplete="current-password"
 										required
-										className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+										className="block pl-4 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 									/>
+									{errors.confirmPassword?.message && (
+										<p className="text-red-600">
+											{errors.confirmPassword.message}
+										</p>
+									)}
 								</div>
 							</div>
 
@@ -80,11 +114,11 @@ const RegisterPage = () => {
 						</form>
 					</div>
 
-					<p className="mt-10 text-center text-sm text-gray-500">
+					<p className="mt-10 text-center text-sm text-gray-100">
 						Already a registered user?{" "}
 						<Link
 							href="/login"
-							className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+							className="font-semibold leading-6 text-indigo-300 hover:text-indigo-500"
 						>
 							sign in
 						</Link>

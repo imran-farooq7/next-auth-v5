@@ -15,7 +15,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${poppins.className} antialiased`}>{children}</body>
+			<body className={`${poppins.className} bg-gray-900 antialiased`}>
+				{children}
+			</body>
 		</html>
 	);
 }
