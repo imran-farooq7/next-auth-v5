@@ -1,6 +1,7 @@
 "use client";
+import { registerUser } from "@/lib/actions";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 interface FormValues {
 	email: string;
 	password: string;
@@ -20,7 +21,13 @@ const RegisterPage = () => {
 			confirmPassword: "",
 		},
 	});
-	const handleFormSubmit = async () => {};
+	const handleFormSubmit = async (data: FormValues) => {
+		const res = await registerUser({
+			email: data.email as string,
+			password: data.password as string,
+			confirmPassword: data.confirmPassword as string,
+		});
+	};
 	return (
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
