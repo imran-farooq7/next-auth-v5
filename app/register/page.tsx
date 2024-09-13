@@ -1,7 +1,10 @@
 "use client";
 import { registerUser } from "@/lib/actions";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 interface FormValues {
 	email: string;
 	password: string;
@@ -9,11 +12,14 @@ interface FormValues {
 }
 
 const RegisterPage = () => {
+	const [loading, setLoading] = useState(false);
+	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		watch,
 		formState: { errors },
+		reset,
 	} = useForm<FormValues>({
 		defaultValues: {
 			email: "",
@@ -22,11 +28,25 @@ const RegisterPage = () => {
 		},
 	});
 	const handleFormSubmit = async (data: FormValues) => {
-		const res = await registerUser({
-			email: data.email as string,
-			password: data.password as string,
-			confirmPassword: data.confirmPassword as string,
-		});
+		try {
+			setLoading(true);
+			const res = await registerUser({
+				email: data.email as string,
+				password: data.password as string,
+				confirmPassword: data.confirmPassword as string,
+			});
+			if (res?.statusbar === "success") {
+				toast.success(res.message);
+				reset();
+				router.push("/login");
+			} else {
+				toast.error(res?.message!);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<>
@@ -82,14 +102,14 @@ const RegisterPage = () => {
 							</div>
 							<div>
 								<label
-									htmlFor="password"
+									htmlFor="confirmPassword"
 									className="block text-sm font-medium leading-6 text-gray-900"
 								>
 									Confirm Password
 								</label>
 								<div className="mt-2">
 									<input
-										id="password"
+										id="confirmPassword"
 										type="password"
 										{...register("confirmPassword", {
 											required: true,
@@ -113,7 +133,8 @@ const RegisterPage = () => {
 							<div>
 								<button
 									type="submit"
-									className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+									disabled={loading}
+									className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-wait"
 								>
 									Register
 								</button>

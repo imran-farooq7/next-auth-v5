@@ -8,7 +8,7 @@ export const registerUser = async (data: {
 	password: string;
 	confirmPassword: string;
 }) => {
-	const hashedPassword = await bcrypt.hash(data.password, 12);
+	const hashedPassword = await bcrypt.hash(data.password, 10);
 	try {
 		const user = await prisma.user.create({
 			data: {
@@ -23,15 +23,17 @@ export const registerUser = async (data: {
 			};
 		}
 	} catch (error: any) {
-		if (error.code === "23505") {
+		console.log(error);
+		if (error.code === "P2002") {
 			return {
 				statusbar: "error",
-				message: "User email already exists",
+				message: "An account already exists with this email address",
+			};
+		} else {
+			return {
+				statusbar: "error",
+				message: "User creation failed",
 			};
 		}
-		return {
-			statusbar: "error",
-			message: "User creation failed",
-		};
 	}
 };
