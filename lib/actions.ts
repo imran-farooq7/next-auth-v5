@@ -1,7 +1,8 @@
 "use server";
 
+import { signIn } from "@/auth";
 import prisma from "@/prisma/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const registerUser = async (data: {
 	email: string;
@@ -45,5 +46,6 @@ export const loginUser = async ({
 	password: string;
 }) => {
 	try {
+		await signIn("credentials", { email, password, redirect: false });
 	} catch (error) {}
 };

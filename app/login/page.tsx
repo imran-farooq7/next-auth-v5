@@ -1,4 +1,5 @@
 "use client";
+import { loginUser } from "@/lib/actions";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 interface FormValues {
@@ -19,6 +20,9 @@ const LoginPage = () => {
 			password: "",
 		},
 	});
+	const onSubmit = async (data: FormValues) => {
+		await loginUser(data);
+	};
 	return (
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -30,7 +34,7 @@ const LoginPage = () => {
 
 				<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
 					<div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-						<form className="space-y-6">
+						<form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
 							<div>
 								<label
 									htmlFor="email"
