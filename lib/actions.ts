@@ -37,3 +37,13 @@ export const registerUser = async (data: {
 		}
 	}
 };
+export const loginUser = async ({
+	email,
+	password,
+}: {
+	email: string;
+	password: string;
+}) => {
+	try {
+	} catch (error) {}
+};
