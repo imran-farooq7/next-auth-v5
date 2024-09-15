@@ -33,7 +33,7 @@ const LoginPage = () => {
 			if (res?.status === "success") {
 				toast.success(res.message);
 				reset();
-				router.push("/dashboard");
+				router.push("/myapp");
 			} else {
 				toast.error(res?.message!);
 			}
