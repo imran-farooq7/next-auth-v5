@@ -16,19 +16,9 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const session = await auth();
 	return (
 		<html lang="en">
 			<body className={`${poppins.className} bg-gray-900 antialiased`}>
-				{session?.user?.email ? (
-					<div>
-						<p className="text-white">{session.user.email}</p>
-						<Logout />
-					</div>
-				) : (
-					<p className="text-white">currently no user logged in</p>
-				)}
-
 				{children}
 				<Toaster />
 			</body>
