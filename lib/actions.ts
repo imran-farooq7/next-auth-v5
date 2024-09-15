@@ -46,6 +46,21 @@ export const loginUser = async ({
 	password: string;
 }) => {
 	try {
-		await signIn("credentials", { email, password, redirect: false });
-	} catch (error) {}
+		const res = await signIn("credentials", {
+			email,
+			password,
+			redirect: false,
+		});
+		if (res) {
+			return {
+				status: "success",
+				message: "login successfully",
+			};
+		}
+	} catch (error) {
+		return {
+			status: "error",
+			message: "incorrect email or password",
+		};
+	}
 };

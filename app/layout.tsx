@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { auth } from "@/auth";
+import Logout from "@/components/Logout";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 export const metadata: Metadata = {
@@ -19,7 +20,14 @@ export default async function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.className} bg-gray-900 antialiased`}>
-				<div>{session?.user?.email ?? "currently no user logged in"}</div>
+				{session?.user?.email ? (
+					<div>
+						<p className="text-white">{session.user.email}</p>
+						<Logout />
+					</div>
+				) : (
+					<p className="text-white">currently no user logged in</p>
+				)}
 
 				{children}
 				<Toaster />

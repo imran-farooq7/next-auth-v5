@@ -1,13 +1,19 @@
 "use client";
 import { loginUser } from "@/lib/actions";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 interface FormValues {
 	email: string;
 	password: string;
 }
 
 const LoginPage = () => {
+	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+
 	const {
 		register,
 		handleSubmit,
@@ -21,7 +27,21 @@ const LoginPage = () => {
 		},
 	});
 	const onSubmit = async (data: FormValues) => {
-		await loginUser(data);
+		try {
+			setLoading(true);
+			const res = await loginUser(data);
+			if (res?.status === "success") {
+				toast.success(res.message);
+				reset();
+				router.push("/dashboard");
+			} else {
+				toast.error(res?.message!);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<>
@@ -76,7 +96,8 @@ const LoginPage = () => {
 							<div>
 								<button
 									type="submit"
-									className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-wait"
+									disabled={loading}
+									className="flex disabled:cursor-wait w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 								>
 									Login
 								</button>
