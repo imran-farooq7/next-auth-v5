@@ -3,6 +3,7 @@
 import { auth, signIn } from "@/auth";
 import prisma from "@/prisma/db";
 import bcrypt, { compare } from "bcryptjs";
+import { randomBytes } from "crypto";
 
 export const registerUser = async (data: {
 	email: string;
@@ -114,4 +115,22 @@ export const changePassword = async ({
 			message: "Invalid current password",
 		};
 	}
+};
+export const resetPassword = async (emailAddress: string) => {
+	const session = await auth();
+	if (session?.user?.email) {
+		return {
+			status: "error",
+			message: "You are already logged in!",
+		};
+	}
+	const user = await prisma.user.findUnique({
+		where: {
+			email: emailAddress,
+		},
+	});
+	if (!user) {
+		return;
+	}
+	const passwordResetToken = randomBytes(32).toString("hex");
 };
