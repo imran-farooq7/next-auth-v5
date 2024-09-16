@@ -132,5 +132,20 @@ export const resetPassword = async (emailAddress: string) => {
 	if (!user) {
 		return;
 	}
+	const tokenExpiry = new Date(Date.now() + 3600000);
 	const passwordResetToken = randomBytes(32).toString("hex");
+	const newPasswordResetToken = await prisma.passwordResetToken.upsert({
+		where: {
+			userEmail: emailAddress,
+		},
+		update: {
+			token: passwordResetToken,
+			tokenExpiration: tokenExpiry,
+		},
+		create: {
+			token: passwordResetToken,
+			tokenExpiration: tokenExpiry,
+			userEmail: emailAddress,
+		},
+	});
 };

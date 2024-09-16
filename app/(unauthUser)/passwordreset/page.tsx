@@ -1,5 +1,5 @@
 "use client";
-import { registerUser } from "@/lib/actions";
+import { registerUser, resetPassword } from "@/lib/actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,25 +24,21 @@ const PasswordResetPage = () => {
 		},
 	});
 	const handleFormSubmit = async (data: FormValues) => {
-		// try {
-		// 	setLoading(true);
-		// 	// const res = await registerUser({
-		// 	// 	email: data.email as string,
-		// 	// 	password: data.password as string,
-		// 	// 	confirmPassword: data.confirmPassword as string,
-		// 	// });
-		// 	// if (res?.statusbar === "success") {
-		// 		// toast.success(res.message);
-		// 		// reset();
-		// 		// router.push("/login");
-		// 	// } else {
-		// 		// toast.error(res?.message!);
-		// 	// }
-		// // } catch (error) {
-		// 	// console.log(error);
-		// // } finally {
-		// 	setLoading(false);
-		// }
+		try {
+			setLoading(true);
+			const res = await resetPassword(data.email);
+			// if (res === "success") {
+			// 	toast.success(res.message);
+			// 	reset();
+			// 	router.push("/login");
+			// } else {
+			// 	toast.error(res?.message!);
+			// }
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<>
