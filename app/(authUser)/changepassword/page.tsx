@@ -1,7 +1,9 @@
 "use client";
 
+import { changePassword } from "@/lib/actions";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 interface FormValues {
 	currentPassword: string;
 	password: string;
@@ -14,6 +16,7 @@ const ChangePasswordPage = () => {
 		register,
 		handleSubmit,
 		watch,
+		reset,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -22,7 +25,27 @@ const ChangePasswordPage = () => {
 			confirmPassword: "",
 		},
 	});
-	const handleFormSubmit = () => {};
+	const handleFormSubmit = async (data: FormValues) => {
+		try {
+			setLoading(true);
+			const res = await changePassword({
+				currentPassword: data.currentPassword,
+				password: data.password as string,
+				confirmPassword: data.confirmPassword as string,
+			});
+			if (res?.status === "success") {
+				toast.success(res.message);
+				reset();
+				// router.push("/login");
+			} else {
+				toast.error(res?.message!);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 	return (
 		<div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
