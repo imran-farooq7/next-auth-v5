@@ -6,7 +6,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 	if (session) {
 		redirect("/myapp");
 	}
-	return <>{children}</>;
+	return <div className="min-h-screen flex items-center">{children}</div>;
 };
 
 export default Layout;

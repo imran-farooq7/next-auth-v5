@@ -117,7 +117,7 @@ const LoginPage = () => {
 					<p className="mt-5 text-center text-sm text-gray-100">
 						Forgot password?{" "}
 						<Link
-							href="/register"
+							href="/passwordreset"
 							className="font-semibold leading-6 text-indigo-300 hover:text-indigo-500"
 						>
 							Forget Password
