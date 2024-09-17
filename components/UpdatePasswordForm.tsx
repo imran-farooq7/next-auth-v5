@@ -1,16 +1,16 @@
 "use client";
-import { registerUser } from "@/lib/actions";
+import { updateUserPassword } from "@/lib/actions";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 interface FormValues {
 	password: string;
 	confirmPassword: string;
 }
 
-const UpdatePasswordForm = () => {
+const UpdatePasswordForm = ({ token }: { token: string }) => {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const {
@@ -26,24 +26,20 @@ const UpdatePasswordForm = () => {
 		},
 	});
 	const handleFormSubmit = async (data: FormValues) => {
-		// try {
-		// 	setLoading(true);
-		// 	const res = await registerUser({
-		// 		password: data.password as string,
-		// 		confirmPassword: data.confirmPassword as string,
-		// 	});
-		// 	if (res?.statusbar === "success") {
-		// 		toast.success(res.message);
-		// 		reset();
-		// 		router.push("/login");
-		// 	} else {
-		// 		toast.error(res?.message!);
-		// 	}
-		// } catch (error) {
-		// 	console.log(error);
-		// } finally {
-		// 	setLoading(false);
-		// }
+		try {
+			setLoading(true);
+			const res = await updateUserPassword(token, data.password);
+			if (res?.status === "success") {
+				toast.success(res.message);
+				reset();
+			} else {
+				toast.error(res?.message!);
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<>

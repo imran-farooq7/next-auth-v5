@@ -2,7 +2,7 @@
 
 import { auth, signIn } from "@/auth";
 import prisma from "@/prisma/db";
-import bcrypt, { compare } from "bcryptjs";
+import bcrypt, { compare, hash } from "bcryptjs";
 import { randomBytes } from "crypto";
 
 export const registerUser = async (data: {
@@ -151,4 +151,31 @@ export const resetPassword = async (emailAddress: string) => {
 			userEmail: emailAddress,
 		},
 	});
+};
+export const updateUserPassword = async (token: string, password: string) => {
+	const passwordResetToken = await prisma.passwordResetToken.findFirst({
+		where: {
+			token,
+		},
+	});
+	const hashedPassword = await hash(password, 10);
+	const updateUserPassword = await prisma.user.update({
+		where: {
+			email: passwordResetToken?.userEmail,
+		},
+		data: {
+			password: hashedPassword,
+		},
+	});
+	if (updateUserPassword) {
+		return {
+			status: "success",
+			message: "User password reset successfully",
+		};
+	} else {
+		return {
+			status: "error",
+			message: "Something went wrong",
+		};
+	}
 };

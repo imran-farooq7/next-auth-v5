@@ -24,7 +24,7 @@ const UpdatePasswordPage = async ({ searchParams: { token } }: Props) => {
 	return (
 		<div className="flex flex-1 justify-center items-center flex-col min-h-screen">
 			{isValidToken ? (
-				<UpdatePasswordForm />
+				<UpdatePasswordForm token={token!} />
 			) : (
 				<Card>
 					<p className="font-bold text-2xl">
