@@ -12,12 +12,13 @@ interface FormValues {
 
 const PasswordResetPage = () => {
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState("");
 	const router = useRouter();
 	const {
 		register,
 		handleSubmit,
 		getValues,
-		formState: { errors, isSubmitted },
+		formState: { errors, isSubmitted, isSubmitSuccessful },
 		reset,
 	} = useForm<FormValues>({
 		defaultValues: {
@@ -28,13 +29,12 @@ const PasswordResetPage = () => {
 		try {
 			setLoading(true);
 			const res = await resetPassword(data.email);
-			// if (res === "success") {
-			// 	toast.success(res.message);
-			// 	reset();
-			// 	router.push("/login");
-			// } else {
-			// 	toast.error(res?.message!);
-			// }
+			if (res?.status === "success") {
+				reset();
+			} else {
+				setError(res?.message!);
+				toast.error(res?.message!);
+			}
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -44,13 +44,11 @@ const PasswordResetPage = () => {
 	return (
 		<>
 			<div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
-				{isSubmitted ? (
+				{isSubmitSuccessful && error !== "User not found" ? (
 					<div className="max-w-lg mx-auto text-center text-emerald-500 font-semibold">
-						<Card
-							text={`You will receive a password reset email at ${getValues(
-								"email"
-							)} 📩`}
-						/>
+						<Card>
+							You will receive a password reset email at {getValues("email")} 📩
+						</Card>
 					</div>
 				) : (
 					<>

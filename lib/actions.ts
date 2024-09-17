@@ -130,7 +130,10 @@ export const resetPassword = async (emailAddress: string) => {
 		},
 	});
 	if (!user) {
-		return;
+		return {
+			status: "error",
+			message: "User not found",
+		};
 	}
 	const tokenExpiry = new Date(Date.now() + 3600000);
 	const passwordResetToken = randomBytes(32).toString("hex");
