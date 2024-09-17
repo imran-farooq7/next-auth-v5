@@ -1,15 +1,22 @@
 import { auth } from "@/auth";
 import Card from "@/components/Card";
+import TwoFactorAuthForm from "@/components/TwoFactorAuthForm";
+import prisma from "@/prisma/db";
 
 const MyApp = async () => {
 	const session = await auth();
+	const user = await prisma.user.findFirst({
+		where: {
+			email: session?.user?.email!,
+		},
+	});
+
 	return (
 		<Card>
 			<p>Your Account</p>
+			<p className="font-bold">Email</p>
 			<p>{session?.user?.email}</p>
-			<button className="bg-emerald-500 rounded-lg text-white px-5 py-3">
-				Enable 2 Factor Authentication
-			</button>
+			<TwoFactorAuthForm twofa={user?.twoFactorEnabled!} />
 		</Card>
 	);
 };
