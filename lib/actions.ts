@@ -4,6 +4,7 @@ import { auth, signIn } from "@/auth";
 import prisma from "@/prisma/db";
 import bcrypt, { compare, hash } from "bcryptjs";
 import { randomBytes } from "crypto";
+import { mailer } from "./email";
 
 export const registerUser = async (data: {
 	email: string;
@@ -150,6 +151,15 @@ export const resetPassword = async (emailAddress: string) => {
 			tokenExpiration: tokenExpiry,
 			userEmail: emailAddress,
 		},
+	});
+	const resetLink = `${process.env.SITE_BASE_URL}/updatepassword?token=${newPasswordResetToken.token}`;
+	await mailer.sendMail({
+		from: "test@resend.dev",
+		subject: "Your password reset link",
+		to: emailAddress,
+		text: `Hi, ${emailAddress} you have requested your password reset 
+		Here is the your password reset link
+		<a href=${resetLink}>Click it</a>`,
 	});
 };
 export const updateUserPassword = async (token: string, password: string) => {
