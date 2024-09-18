@@ -5,6 +5,7 @@ import prisma from "@/prisma/db";
 import bcrypt, { compare, hash } from "bcryptjs";
 import { randomBytes } from "crypto";
 import { mailer } from "./email";
+import { authenticator } from "otplib";
 
 export const registerUser = async (data: {
 	email: string;
@@ -188,4 +189,43 @@ export const updateUserPassword = async (token: string, password: string) => {
 			message: "Something went wrong",
 		};
 	}
+};
+export const get2FAuth = async () => {
+	const session = await auth();
+	if (!session?.user?.email) {
+		return {
+			status: "error",
+			message: "Login to generate two factor authentication",
+		};
+	}
+	const user = await prisma.user.findFirst({
+		where: {
+			email: session.user.email,
+		},
+	});
+	if (!user) {
+		return {
+			status: "error",
+			message: "User not found",
+		};
+	}
+	let twoFactorAuth = user.twoFactorAuth;
+	if (twoFactorAuth) {
+		twoFactorAuth = authenticator.generateSecret();
+		const updateUser = await prisma.user.update({
+			where: {
+				email: session.user.email,
+			},
+			data: {
+				twoFactorAuth,
+			},
+		});
+	}
+	return {
+		twoFactorAuth: authenticator.keyuri(
+			session.user.email,
+			"Next Auth V5",
+			twoFactorAuth ?? ""
+		),
+	};
 };
