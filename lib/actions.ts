@@ -210,8 +210,8 @@ export const get2FAuth = async () => {
 		};
 	}
 	let twoFactorAuth = user.twoFactorAuth;
-	if (twoFactorAuth) {
-		twoFactorAuth = authenticator.generateSecret();
+	if (!twoFactorAuth) {
+		twoFactorAuth = await authenticator.generateSecret();
 		const updateUser = await prisma.user.update({
 			where: {
 				email: session.user.email,
