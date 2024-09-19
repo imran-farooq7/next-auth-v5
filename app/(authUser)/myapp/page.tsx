@@ -6,10 +6,8 @@ const MyApp = async () => {
 	return (
 		<Card>
 			<p>Your Account</p>
+			<p className="font-bold text-emerald-500">Email</p>
 			<p>{session?.user?.email}</p>
-			<button className="bg-emerald-500 rounded-lg text-white px-5 py-3">
-				Enable 2 Factor Authentication
-			</button>
 		</Card>
 	);
 };
