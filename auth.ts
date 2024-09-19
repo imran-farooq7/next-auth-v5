@@ -3,8 +3,13 @@ import Credentials from "next-auth/providers/credentials";
 import prisma from "./prisma/db";
 import { compare } from "bcryptjs";
 import GitHub from "next-auth/providers/github";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+	adapter: PrismaAdapter(prisma),
+	session: {
+		strategy: "jwt",
+	},
 	providers: [
 		GitHub,
 		Credentials({
@@ -23,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				} else {
 					const isPasswordCorrect = await compare(
 						credentials.password as string,
-						user.password
+						user.password!
 					);
 					console.log(isPasswordCorrect);
 					if (!isPasswordCorrect) {
